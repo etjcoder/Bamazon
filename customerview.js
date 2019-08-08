@@ -16,7 +16,7 @@ var connection = mysql.createConnection({
 });
 
 function connectSQL() {
-    connection.connect(function(err, res){
+    connection.connect(function (err, res) {
         if (err) throw err;
         console.log("connected as id " + connection.threadId + "\n");
         console.log(res);
@@ -29,14 +29,14 @@ function connectSQL() {
 function readTableCustomer() {
     console.log("Reading Table of products for Customer...");
     var query = connection.query(
-        `SELECT * FROM products`, function(err, res) {
+        `SELECT * FROM products`, function (err, res) {
             if (err) throw err;
             var choicesArray = [];
-            if (res.length < 1 ) {
+            if (res.length < 1) {
                 console.log("There are no items to show!")
             } else {
                 for (var i = 0; i < res.length; i++) {
-                    console.log("||" + res[i].item_id + " | " + res[i].product_name + " | " + res[i].department_name + " | " + res[i].price + " | " + res[i].stock_quantity + " || " );
+                    console.log("||" + res[i].item_id + " | " + res[i].product_name + " | " + res[i].department_name + " | " + res[i].price + " | " + res[i].stock_quantity + " || ");
                     // choicesArray.push(res[i])
                 }
             }
@@ -50,57 +50,58 @@ function readTableCustomer() {
                 },
                 {
                     type: "input",
-                    name:"amount_requested",
+                    name: "amount_requested",
                     message: "How many of these items would you like to buy?"
                 }
-            ]).then(function(response) {
+            ]).then(function (response) {
                 console.log(response);
                 // console.log(response.item_chosen);
                 // console.log(response.amount_requested);
                 chosenAmount = parseInt(response.amount_requested);
                 chosenItemID = response.item_chosen;
-                    findProductInTable(response.item_chosen);
-                    checkProduct = function(name, price, quantity){
+                findProductInTable(response.item_chosen);
+                checkProduct = function (name, price, quantity, dept) {
+                    var finalCost = 0;
+                    console.log(`You've chosen ${name}. That will cost $${price}. There are ${quantity} remaining.`);
+                    parsedPrice = parseInt(price);
+                    parsedQuantity = parseInt(quantity);
+                    // console.log(parsedPrice);
+                    // console.log(parsedQuantity);
+                    // console.log(chosenAmount)
+                    if (chosenAmount > parsedQuantity) {
+                        console.log("-----------------------------------------------------------")
+                        console.log("-------------------------BUYING EVENT ---------------------")
+                        console.log("...Sorry there is not enough in stock to fill your order...")
+                        console.log("-----------------------------------------------------------")
+                        console.log("-----------------------------------------------------------")
+                    } else {
+                        var amountRemaining = parsedQuantity - chosenAmount;
+                        console.log("-----------------------------------------------------------")
+                        console.log("-------------------------BUYING EVENT ---------------------")
+                        console.log(`...Thank you! You've bought ${chosenAmount}. Remaining Stock: ${amountRemaining}...`)
+                        console.log("-----------------------------------------------------------")
+                        console.log("-----------------------------------------------------------")
+                        updateTable(amountRemaining, chosenItemID);
 
-                        console.log(`You've chosen ${name}. That will cost $${price}. There are ${quantity} remaining.`);
-                        parsedPrice = parseInt(price);
-                        parsedQuantity = parseInt(quantity);
-                        // console.log(parsedPrice);
-                        // console.log(parsedQuantity);
-                        // console.log(chosenAmount)
-                        if(chosenAmount > parsedQuantity) {
-                            console.log("-----------------------------------------------------------")
-                            console.log("-------------------------BUYING EVENT ---------------------")
-                            console.log("...Sorry there is not enough in stock to fill your order...")
-                            console.log("-----------------------------------------------------------")
-                            console.log("-----------------------------------------------------------")
-                        } else {
-                            var amountRemaining = parsedQuantity - chosenAmount;
-                            console.log("-----------------------------------------------------------")
-                            console.log("-------------------------BUYING EVENT ---------------------")
-                            console.log(`...Thank you! You've bought ${chosenAmount}. Remaining Stock: ${amountRemaining}...`)
-                            console.log("-----------------------------------------------------------")
-                            console.log("-----------------------------------------------------------")
-                            updateTable(amountRemaining, chosenItemID);
-
-                            revealCost = function(){
-                                var finalCost = chosenAmount * parsedPrice;
-                                console.log("--------------------------------------------------------------------------------------")
-                                console.log("-------------------------CONFIRMATION EVENT ------------------------------------------")
-                                console.log(`...Thank you! Your total cost will be $${finalCost}. Please recommend us to your friends!...`)
-                                console.log("--------------------------------------------------------------------------------------")
-                                console.log("--------------------------------------------------------------------------------------")
-                            }
+                        revealCost = function () {
+                            finalCost = chosenAmount * parsedPrice;
+                            console.log("--------------------------------------------------------------------------------------")
+                            console.log("-------------------------CONFIRMATION EVENT ------------------------------------------")
+                            console.log(`...Thank you! Your total cost will be $${finalCost}. Please recommend us to your friends!...`)
+                            console.log("--------------------------------------------------------------------------------------")
+                            console.log("--------------------------------------------------------------------------------------")
+                            calculateProfits(dept, finalCost);
                         }
-                        
                     }
+
+                }
             })
         }
     )
 
 }
 
-function findProductInTable(itemID){
+function findProductInTable(itemID) {
     parsedItem = parseInt(itemID)
     var query = connection.query(
         `SELECT * FROM products WHERE item_id = ${parsedItem}`, function (err, res) {
@@ -110,15 +111,16 @@ function findProductInTable(itemID){
             itemChosen = res[0].product_name;
             itemPrice = res[0].price;
             itemQuantity = res[0].stock_quantity;
-            checkProduct(itemChosen, itemPrice, itemQuantity);
+            itemDepartment = res[0].department_name;
+            checkProduct(itemChosen, itemPrice, itemQuantity, itemDepartment);
         }
     )
 }
 
-function updateTable(amt, id){
+function updateTable(amt, id) {
     parsedAmountRemaining = parseInt(amt)
     var query = connection.query(
-        `UPDATE products SET stock_quantity = ${amt} WHERE item_id = ${id}`, function(err, res) {
+        `UPDATE products SET stock_quantity = ${amt} WHERE item_id = ${id}`, function (err, res) {
             if (err) throw err;
             console.log("...............................");
             console.log(".........SERVER EVENT..........");
@@ -131,6 +133,57 @@ function updateTable(amt, id){
     )
 }
 
+function calculateProfits(dept, value) {
+    var currentSales = 0;;
+    var query = connection.query(
+        `SELECT * FROM departments WHERE department_name = "${dept}"`, function (err, res) {
+            console.log(res);
+            console.log(res[0].product_sales);
+            currentSales = res[0].product_sales;
+        }
+    )
 
+    setTimeout(function () {
+        console.log("Current Sales are: " + currentSales);
+        newSales = currentSales + value;
+        console.log("New sales are: " + newSales);
+        var query = connection.query(
+            `UPDATE departments SET product_sales = ${newSales} WHERE department_name = "${dept}"`, function (err, res) {
+                if (err) throw err;
 
-connectSQL();
+                console.log("Profits calculated and added to departments Table!")
+
+            }
+        )
+
+    }, 4000)
+}
+
+    appendItem = function (id, prodname, deptname, itemprice, quantity) {
+
+        console.log("Adding your new item into the database table ... ");
+        // insertString = "INSERT INTO products ( item_id, product_name, department_name, price, stock_quantity) "
+        var query = connection.query(
+            "INSERT INTO products SET ?",
+            {
+                item_id: id,
+                product_name: prodname,
+                department_name: deptname,
+                price: itemprice,
+                stock_quantity: quantity
+            }, function (err, res) {
+                if (err) throw err;
+                console.log(res.affectedRows + "product inserted!\n");
+            }
+
+            // `${insertString} VALUES (${id}, ${prodname}, ${deptname}, ${price}, ${quantity})`, function(err, res) {
+            //     if (err) throw err;
+            //     console.log("connected as id: " + connection.threadId + "\n");
+
+            //     console.log("You've added your item to the table!")
+            // }
+        )
+
+    }
+
+    connectSQL();

@@ -37,5 +37,34 @@ VALUES
 
 SELECT * FROM products;
 
+CREATE TABLE products(
+  item_id INT NOT NULL,
+  product_name VARCHAR(100) NOT NULL,
+  department_name VARCHAR(50),
+  price INT(10) default 1,
+  stock_quantity INT(10) default 0
+);
 
+USE bamazon;
+CREATE TABLE departments(
+department_id INT NOT NULL,
+department_name VARCHAR(50) NOT NULL,
+over_head_costs INT(10) default 0
+);
 
+SELECT * FROM departments;
+ALTER TABLE departments ADD product_sales INT(10);
+USE bamazon;
+SELECT * FROM departments WHERE department_name = "electronics";
+
+USE bamazon;
+INSERT INTO departments (
+	department_id,
+    department_name,
+    over_head_costs,
+    product_sales
+) VALUES
+	("1", "food", "5000", "0"),
+    	("2", "electronics", "8000", "0"),
+        	("3", "videogames", "7000", "0"),
+            	("4", "Shoes", "4000", "0")
