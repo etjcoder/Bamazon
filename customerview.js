@@ -65,9 +65,9 @@ function readTableCustomer() {
                         console.log(`You've chosen ${name}. That will cost $${price}. There are ${quantity} remaining.`);
                         parsedPrice = parseInt(price);
                         parsedQuantity = parseInt(quantity);
-                        console.log(parsedPrice);
-                        console.log(parsedQuantity);
-                        console.log(chosenAmount)
+                        // console.log(parsedPrice);
+                        // console.log(parsedQuantity);
+                        // console.log(chosenAmount)
                         if(chosenAmount > parsedQuantity) {
                             console.log("-----------------------------------------------------------")
                             console.log("-------------------------BUYING EVENT ---------------------")
@@ -82,9 +82,17 @@ function readTableCustomer() {
                             console.log("-----------------------------------------------------------")
                             console.log("-----------------------------------------------------------")
                             updateTable(amountRemaining, chosenItemID);
+
+                            revealCost = function(){
+                                var finalCost = chosenAmount * parsedPrice;
+                                console.log("--------------------------------------------------------------------------------------")
+                                console.log("-------------------------CONFIRMATION EVENT ------------------------------------------")
+                                console.log(`...Thank you! Your total cost will be $${finalCost}. Please recommend us to your friends!...`)
+                                console.log("--------------------------------------------------------------------------------------")
+                                console.log("--------------------------------------------------------------------------------------")
+                            }
                         }
                         
-
                     }
             })
         }
@@ -98,7 +106,7 @@ function findProductInTable(itemID){
         `SELECT * FROM products WHERE item_id = ${parsedItem}`, function (err, res) {
             if (err) throw err;
             // console.log(res);
-            console.log("findProductInTable function returned: " + JSON.stringify(res));
+            // console.log("findProductInTable function returned: " + JSON.stringify(res));
             itemChosen = res[0].product_name;
             itemPrice = res[0].price;
             itemQuantity = res[0].stock_quantity;
@@ -112,7 +120,12 @@ function updateTable(amt, id){
     var query = connection.query(
         `UPDATE products SET stock_quantity = ${amt} WHERE item_id = ${id}`, function(err, res) {
             if (err) throw err;
-            console.log("You've successfully updated your table!" + JSON.stringify(res));
+            console.log("...............................");
+            console.log(".........SERVER EVENT..........");
+            console.log("...Database has been updated...");
+            console.log("...............................");
+            console.log("...............................");
+            revealCost();
         }
 
     )
