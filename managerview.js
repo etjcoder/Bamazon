@@ -184,16 +184,47 @@ function findProductInTable(itemID) {
 
 function addToInventory() {
     console.log("You have chosen to add an item to the table")
+    var departmentChoicesArray = [];
+        var query = connection.query(
+            `SELECT department_name FROM departments`, function(err, res) {
+                // console.log(res);
+                departmentChoicesArray = [];
+                if (res.length < 1) {
+                    // console.log("There are no items to show!")
+                } else {
+                    for (var i = 0; i < res.length; i++) {
+                        // console.log("||" + res[i].department_name + " | " + res[i].product_name + " | " + res[i].department_name + " | " + res[i].price + " | " + res[i].stock_quantity + " || ");
+                        departmentChoicesArray.push(res[i].department_name)
+                    }
+                }
+                console.log("Getting Departments...");
+                // newArr(departmentChoicesArray);
+                return departmentChoicesArray;
+            }
+        )
+        // newArr = function(arr) {
+        //     departmentChoicesArray = arr;
+        //     console.log("3: " + departmentChoicesArray);
+        // }
+setTimeout(function(){
+     
+        
     inquirer.prompt([
         {
             type: "input",
             name: "product_name",
             message: "What is the name of the item you are adding?"
         },
+        // {
+        //     type: "input",
+        //     name: "department_name",
+        //     message: "What is the category of the item you are adding?"
+        // },
         {
-            type: "input",
-            name: "department_name",
-            message: "What is the category of the item you are adding?"
+            type: "list",
+            name: "chosen_department",
+            choices: departmentChoicesArray,
+            message: "Which department would you like to add this item to?"
         },
         {
             type: "input",
@@ -208,6 +239,7 @@ function addToInventory() {
 
     ]).then(function (response) {
        var newID = "";
+       console.log("Assigning new item an ID...");
         var query = connection.query(
             `SELECT * FROM products`, function (err, res) {
                 if (err) throw err;
@@ -222,7 +254,7 @@ function addToInventory() {
             // console.log("new item id: " + newItemID)
             var newProductName = response.product_name;
             console.log("new Item name: " + newProductName);
-            var newProdDeptName = response.department_name;
+            var newProdDeptName = response.chosen_department;
             console.log("Assigned to department: " + newProdDeptName);
             var newProdPrice = response.price;
             console.log("The price for this new item is: " + newProdPrice);
@@ -235,7 +267,10 @@ function addToInventory() {
     })
 
 
+}, 3000);
 }
+
+
 
 appendItem = function (id, prodname, deptname, itemprice, quantity) {
 
