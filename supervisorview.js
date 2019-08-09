@@ -76,11 +76,11 @@ function readSupervisorTable() {
 function addDepartment() {
     console.log("You have chosen to add a department to your organization")
     inquirer.prompt([
-        {
-            type: "input",
-            name: "department_id",
-            message: "What will be the new item's department_ID?"
-        },
+        // {
+        //     type: "input",
+        //     name: "department_id",
+        //     message: "What will be the new item's department_ID?"
+        // },
         {
             type: "input",
             name: "department_name",
@@ -94,15 +94,29 @@ function addDepartment() {
 
     ]).then(function (response) {
 
-        var newDepartmentID = response.department_id;
-        console.log("new item id: " + newDepartmentID)
+        var newID = "";
+        console.log("Assigning department item an ID...");
+         var query = connection.query(
+             `SELECT * FROM departments`, function (err, res) {
+                 if (err) throw err;
+                 // console.log(res);
+                 // console.log(res.length);
+                 newID = res.length + 1;
+             }
+         )
+
+        setTimeout(function(){
+        
+        var newDepartmentID = newID;
+        console.log("new department id: " + newDepartmentID)
         var newDepartmentName = response.department_name;
-        console.log("new Item name: " + newDepartmentName);
+        console.log("new department name: " + newDepartmentName);
         var newOverhead = response.over_head_costs;
         console.log("Assigned to department: " + newOverhead);
 
-        appendDept(newDepartmentID, newDepartmentName, newOverhead);
 
+        appendDept(newDepartmentID, newDepartmentName, newOverhead);
+}, 3000);
 
     })
 
