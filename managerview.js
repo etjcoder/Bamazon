@@ -91,28 +91,32 @@ function viewLowInventory() {
     )
 }
 
+var choicesArray2 = [];
+
 function increaseItemQuantity() {
     console.log("You have chosen to increase the inventory on an item...")
 
     var query = connection.query(
         `SELECT * FROM products`, function (err, res) {
             if (err) throw err;
-            // var choicesArray = [];
+            var choicesArray = [];
             if (res.length < 1) {
                 console.log("There are no items to show!")
             } else {
                 for (var i = 0; i < res.length; i++) {
                     console.log("||" + res[i].item_id + " | " + res[i].product_name + " | " + res[i].department_name + " | " + res[i].price + " | " + res[i].stock_quantity + " || ");
-                    // choicesArray.push(res[i])
+                    choicesArray.push(`Item #: ${res[i].item_id} -- ${res[i].product_name}`)
                 }
             }
+    //     }
+    // )
             // console.log(choicesArray);
             inquirer.prompt([
                 {
-                    type: "input",
-                    name: "item_chosen",
-                    message: "Which item would you like to increase? Please enter the item id"
-
+                    type: "list",
+                    name: "chosen_item",
+                    choices: choicesArray,
+                    message: "Which item would you like to increase?"
                 },
                 {
                     type: "input",
@@ -121,10 +125,23 @@ function increaseItemQuantity() {
                 }
             ]).then(function (response) {
 
-                console.log("You've chosen to add items to item ID #: " + response.item_chosen);
+                console.log("You've chosen " + response.chosen_item);
                 console.log("The amount you've chosen to add is: " + response.amount_requested);
-                chosenItemID = response.item_chosen;
+                
                 chosenAmount = parseInt(response.amount_requested);
+                itemID = "";
+
+                chosenAmountTest2 = function () {
+                    for (i = 0; i < choicesArray.length; i++) {
+                        if (response.chosen_item === choicesArray[i]) {
+                            itemID = i;
+                        }
+                    }
+                }
+                chosenAmountTest2();
+                chosenItemID = itemID;
+
+               
                 findProductInTable(chosenItemID);
 
                 updateProduct = function (name, price, quant) {
@@ -144,6 +161,7 @@ function increaseItemQuantity() {
             }
 
             )
+            
         }
     )
 }
@@ -164,35 +182,9 @@ function findProductInTable(itemID) {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 function addToInventory() {
     console.log("You have chosen to add an item to the table")
     inquirer.prompt([
-        {
-            type: "input",
-            name: "item_id",
-            message: "What will be the new item's item_ID?"
-        },
         {
             type: "input",
             name: "product_name",
@@ -215,21 +207,31 @@ function addToInventory() {
         }
 
     ]).then(function (response) {
-
-        var newItemID = response.item_id;
-        console.log("new item id: " + newItemID)
-        var newProductName = response.product_name;
-        console.log("new Item name: " + newProductName);
-        var newProdDeptName = response.department_name;
-        console.log("Assigned to department: " + newProdDeptName);
-        var newProdPrice = response.price;
-        console.log("The price for this new item is: " + newProdPrice);
-        var newProdQuantity = response.stock_quantity;
-        console.log("Of this new item, the amount in stock will be: " + newProdQuantity);
-
-        appendItem(newItemID, newProductName, newProdDeptName, newProdPrice, newProdQuantity);
-
-
+       var newID = "";
+        var query = connection.query(
+            `SELECT * FROM products`, function (err, res) {
+                if (err) throw err;
+                // console.log(res);
+                // console.log(res.length);
+                newID = res.length;
+            }
+        )
+        
+        setTimeout(function(){
+            var newItemID = newID;
+            // console.log("new item id: " + newItemID)
+            var newProductName = response.product_name;
+            console.log("new Item name: " + newProductName);
+            var newProdDeptName = response.department_name;
+            console.log("Assigned to department: " + newProdDeptName);
+            var newProdPrice = response.price;
+            console.log("The price for this new item is: " + newProdPrice);
+            var newProdQuantity = response.stock_quantity;
+            console.log("Of this new item, the amount in stock will be: " + newProdQuantity);
+    
+            appendItem(newItemID, newProductName, newProdDeptName, newProdPrice, newProdQuantity);
+    
+        }, 4000)
     })
 
 
