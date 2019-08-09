@@ -58,7 +58,14 @@ function readSupervisorTable() {
                 console.log("There are no items to show!")
             } else {
                 for (var i = 0; i < res.length; i++) {
-                    console.log("||" + " ID: " + res[i].department_id + " | " + " Dept. name: " + res[i].department_name + " | " + " Dept. costs " + res[i].over_head_costs + " | " + " Dept. Sales " + res[i].product_sales + " || ");
+                    parsedCosts = parseInt(res[i].over_head_costs);
+                    parsedSales = parseInt(res[i].product_sales);
+                    netProfit = parsedSales - parsedCosts;
+                    console.log("||" + " ID: " + res[i].department_id + " | " + 
+                    " Dept. name: " + res[i].department_name + " | " + 
+                    " Dept. costs " + res[i].over_head_costs + " | " + 
+                    " Dept. Sales " + res[i].product_sales + " | " + 
+                    " Department Profits: " + netProfit + " || ");
                     // choicesArray.push(res[i])
                 }
             }

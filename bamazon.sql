@@ -34,7 +34,7 @@ VALUES
   ( "10", "callofduty", "videogame", "40", "50");
 
   
-
+USE bamazon;
 SELECT * FROM products;
 
 CREATE TABLE products(
@@ -66,5 +66,9 @@ INSERT INTO departments (
 ) VALUES
 	("1", "food", "5000", "0"),
     	("2", "electronics", "8000", "0"),
-        	("3", "videogames", "7000", "0"),
-            	("4", "Shoes", "4000", "0")
+        	("3", "videogame", "7000", "0"),
+            	("4", "Shoes", "4000", "0");
+
+USE bamazon;
+UPDATE departments SET department_name = "videogame" WHERE department_id = "3";
+SELECT * FROM departments

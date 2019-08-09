@@ -134,7 +134,7 @@ function updateTable(amt, id) {
 }
 
 function calculateProfits(dept, value) {
-    var currentSales = 0;;
+    var currentSales = 0;
     var query = connection.query(
         `SELECT * FROM departments WHERE department_name = "${dept}"`, function (err, res) {
             console.log(res);
