@@ -4,7 +4,7 @@
 
 
 # Node customerview.js
-
+((Video Demo : https://share.getcloudapp.com/4gu59rEx ))
 This mode allows the user to call upon the database to obtain the list of items available.
 
 It then loops through the items in the table and lets the user choose which item they'd like to buy.
@@ -15,9 +15,11 @@ It then provides the user with the total cost based on the price of the item and
 
 If there is not enough items in the inventoty, it will alert the customer
 
-# Node managerview.js
 
-Thsi mode allows the user to call upon the database to obtain the list of items available.
+# Node managerview.js
+((Video Demo : https://share.getcloudapp.com/E0ulny0x ))
+
+This mode allows the user to call upon the database to obtain the list of items available.
 
 It provides a list of options for the manager to do including:
     - View Products
@@ -30,6 +32,7 @@ The hardest part of this example was providing a method for the new item to auto
 I also added a functionality that loops through the departments table and lets the manager add an item to an existing department, versus typing in the new department which could cause errors
 
 # node supervisorview.js
+((Video Gemo : https://share.getcloudapp.com/JruX6odW))
 
 This mode allows the user to view the departments table. 
 
