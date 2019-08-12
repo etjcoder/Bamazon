@@ -1,7 +1,7 @@
 # Bamazon
 
 # This is the Bamazon app. This is a mockup of a customer/manager/supervisor inventory tracking interface
-
+(( FULL DEMO: https://share.getcloudapp.com/DOujxrgZ))
 
 # Node customerview.js
 ((Video Demo : https://share.getcloudapp.com/4gu59rEx ))
